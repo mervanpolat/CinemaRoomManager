@@ -2,39 +2,49 @@ package cinema;
 import java.util.Scanner;
 
 public class Cinema {
+    private static char[][] cinemaSeats;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Step 1: Read the dimensions of the cinema
+        // Initialize the cinema
         System.out.println("Enter the number of rows:");
         int rows = scanner.nextInt();
         System.out.println("Enter the number of seats in each row:");
         int seatsPerRow = scanner.nextInt();
+        initializeCinema(rows, seatsPerRow);
 
-        // Step 2: Print the initial seating arrangement
-        System.out.println("\nCinema:");
-        printSeating(rows, seatsPerRow, null); // null indicates no booked seat initially
+        while (true) {
+            // Display menu
+            System.out.println("\n1. Show the seats\n2. Buy a ticket\n0. Exit");
+            int choice = scanner.nextInt();
 
-        // Step 3: Read the chosen seat coordinates
-        System.out.println("\nEnter a row number:");
-        int selectedRow = scanner.nextInt();
-        System.out.println("Enter a seat number in that row:");
-        int selectedSeat = scanner.nextInt();
-
-        // Step 4: Determine the ticket price
-        int ticketPrice = calculateTicketPrice(rows, seatsPerRow, selectedRow);
-        System.out.println("\nTicket price: $" + ticketPrice);
-
-        // Step 5: Update and print the seating arrangement with the chosen seat marked as 'B'
-        int[] bookedSeat = {selectedRow, selectedSeat};
-        System.out.println("\nCinema:");
-        printSeating(rows, seatsPerRow, bookedSeat);
-
-        scanner.close();
+            switch (choice) {
+                case 1:
+                    printSeating(rows, seatsPerRow);
+                    break;
+                case 2:
+                    buyTicket(scanner, rows, seatsPerRow);
+                    break;
+                case 0:
+                    return; // Exit the program
+                default:
+                    System.out.println("Unknown command! Please try again.");
+            }
+        }
     }
 
-    // Method to print the seating arrangement
-    private static void printSeating(int rows, int seatsPerRow, int[] bookedSeat) {
+    private static void initializeCinema(int rows, int seatsPerRow) {
+        cinemaSeats = new char[rows][seatsPerRow];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < seatsPerRow; j++) {
+                cinemaSeats[i][j] = 'S'; // S for available seat
+            }
+        }
+    }
+
+    private static void printSeating(int rows, int seatsPerRow) {
+        System.out.println("\nCinema:");
         System.out.print("  ");
         for (int seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
             System.out.print(seatNum + " ");
@@ -44,17 +54,30 @@ public class Cinema {
         for (int rowNum = 1; rowNum <= rows; rowNum++) {
             System.out.print(rowNum + " ");
             for (int seatNum = 1; seatNum <= seatsPerRow; seatNum++) {
-                if (bookedSeat != null && bookedSeat[0] == rowNum && bookedSeat[1] == seatNum) {
-                    System.out.print("B ");
-                } else {
-                    System.out.print("S ");
-                }
+                System.out.print(cinemaSeats[rowNum - 1][seatNum - 1] + " ");
             }
             System.out.println();
         }
     }
 
-    // Method to calculate the ticket price
+    private static void buyTicket(Scanner scanner, int rows, int seatsPerRow) {
+        System.out.println("\nEnter a row number:");
+        int selectedRow = scanner.nextInt();
+        System.out.println("Enter a seat number in that row:");
+        int selectedSeat = scanner.nextInt();
+
+        // Check if the seat is available
+        if (cinemaSeats[selectedRow - 1][selectedSeat - 1] == 'B') {
+            System.out.println("That ticket has already been purchased!");
+            return;
+        }
+
+        // Mark the seat as booked and display ticket price
+        cinemaSeats[selectedRow - 1][selectedSeat - 1] = 'B';
+        int ticketPrice = calculateTicketPrice(rows, seatsPerRow, selectedRow);
+        System.out.println("Ticket price: $" + ticketPrice);
+    }
+
     private static int calculateTicketPrice(int rows, int seatsPerRow, int selectedRow) {
         int totalSeats = rows * seatsPerRow;
         if (totalSeats <= 60 || selectedRow <= rows / 2) {
