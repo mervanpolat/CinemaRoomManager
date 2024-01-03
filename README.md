@@ -16,7 +16,7 @@ This Java application simulates a cinema seat booking system, allowing users to 
 
 ## Installation
 
-Ensure you have Java installed on your system. This application was built and tested with Java [version]. You can download Java from the official [Oracle website](https://www.oracle.com/java/technologies/javase-downloads.html) or use package managers for your specific operating system.
+Ensure you have Java installed on your system. This application was built and tested with Java. You can download Java from the official [Oracle website](https://www.oracle.com/java/technologies/javase-downloads.html) or use package managers for your specific operating system.
 
 ## Compilation and Execution
 
